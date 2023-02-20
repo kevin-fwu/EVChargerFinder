@@ -18,7 +18,7 @@ func FetchData(token, file string) error {
 	if err != nil {
 		return err
 	}
-	req.SetBasicAuth("token", "")
+	req.SetBasicAuth(token, "")
 	resp, err := client.Do(req)
 
 	if err != nil {

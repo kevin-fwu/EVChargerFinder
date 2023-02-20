@@ -30,13 +30,14 @@ func SignalStop() {
 func handleSignal(chSig chan os.Signal) {
 	for {
 		// When I find a need for SIGUSR1/SIGUSR2, handle it here.
-		// sig := <-chSig
+		<-chSig
 		// if sig == syscall.SIGUSR1 {
 
 		// } else if sig == syscall.SIGUSR2 {
 
 		// } else {
 		close(chStop)
+		os.Exit(0)
 		break
 		// }
 	}

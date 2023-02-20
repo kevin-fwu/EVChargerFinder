@@ -3,6 +3,7 @@ package nrel
 import (
 	"crypto/md5"
 	"encoding/json"
+	"errors"
 	"io"
 	"os"
 )
@@ -46,6 +47,10 @@ func ParseFile(filename string) (*InputStationList, error) {
 	err = decoder.Decode(&stationList)
 	if err != nil {
 		return nil, err
+	}
+
+	if len(stationList.Stations) == 0 {
+		return nil, errors.New("station list is empty")
 	}
 	return &stationList, nil
 }
