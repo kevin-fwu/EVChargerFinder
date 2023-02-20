@@ -1,7 +1,9 @@
 package nrel
 
 import (
+	"crypto/md5"
 	"encoding/json"
+	"io"
 	"os"
 )
 
@@ -46,4 +48,20 @@ func ParseFile(filename string) (*InputStationList, error) {
 		return nil, err
 	}
 	return &stationList, nil
+}
+
+func GetMd5(filename string) ([]byte, error) {
+
+	f, err := os.Open(filename)
+	if err != nil {
+		return nil, err
+	}
+	defer f.Close()
+
+	h := md5.New()
+	if _, err := io.Copy(h, f); err != nil {
+		return nil, err
+	}
+
+	return h.Sum(nil), nil
 }

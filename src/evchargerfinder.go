@@ -7,7 +7,7 @@ import (
 	"math"
 	"os"
 
-	"github.com/kevin-fwu/EVChargerFinder/nrel"
+	"github.com/kevin-fwu/EVChargerFinder/util"
 )
 
 // Lets get charging!
@@ -34,21 +34,14 @@ func main() {
 		fmt.Printf("Failed to load config file, error: %+v\n", err)
 		return
 	}
+	util.InitSignalHandler()
 
-	stationList, err := nrel.ParseFile(conf.Nrel.File)
+	err = InitStationLoader(conf.Nrel.Token, conf.Nrel.File)
 
 	if err != nil {
-		err = nrel.FetchData(conf.Nrel.Token, conf.Nrel.File)
-		if err == nil {
-			stationList, err = nrel.ParseFile(conf.Nrel.File)
-		}
-		if err != nil {
-			fmt.Printf("Failed to retrieve NREL data file, error: %+v\n", err)
-			return
-		}
+		fmt.Printf("Failed to init station loader, error: %+v\n", err)
+		return
 	}
-
-	sortedTree = buildTree(stationList)
 
 	if conf.Server.Address != "" {
 		listen(conf.Server.Address, conf.Server.Ssl.Cert, conf.Server.Ssl.Key)
