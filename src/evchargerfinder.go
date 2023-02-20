@@ -42,12 +42,12 @@ func main() {
 		return
 	}
 
-	if conf.Server.Address != "" {
-		listen(conf.Server.Address, conf.Server.Ssl.Cert, conf.Server.Ssl.Key)
-	} else if !math.IsNaN(*latitudeArg) && !math.IsNaN(*longitudeArg) && !math.IsNaN(*distArg) {
+	if !math.IsNaN(*latitudeArg) && !math.IsNaN(*longitudeArg) && !math.IsNaN(*distArg) {
 		parms := &ReqParams{Latitude: *latitudeArg, Longitude: *longitudeArg, Distance: *distArg, CountLimit: *limitArg}
 		list := findClosest(parms)
 
 		json.NewEncoder(os.Stdout).Encode(list)
+	} else if conf.Server.Address != "" {
+		listen(conf.Server.Address, conf.Server.Ssl.Cert, conf.Server.Ssl.Key)
 	}
 }

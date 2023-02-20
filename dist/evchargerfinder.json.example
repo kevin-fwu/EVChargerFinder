@@ -1,0 +1,9 @@
+{
+    "nrel": {
+        "file": "nreldata.json",
+        "token": ""
+    },
+    "server": {
+        "address": ":8080"
+    }
+}
