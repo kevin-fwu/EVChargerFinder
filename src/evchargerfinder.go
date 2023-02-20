@@ -13,7 +13,6 @@ import (
 // Lets get charging!
 
 func main() {
-	fmt.Println("Hello World!")
 
 	confArg := flag.String("conf", "", "The JSON Configuration File.")
 	latitudeArg := flag.Float64("latitude", math.NaN(), "Latitude to check.")
@@ -46,7 +45,8 @@ func main() {
 	if conf.Server.Address != "" {
 		listen(conf.Server.Address, conf.Server.Ssl.Cert, conf.Server.Ssl.Key)
 	} else if !math.IsNaN(*latitudeArg) && !math.IsNaN(*longitudeArg) && !math.IsNaN(*distArg) {
-		list := findClosest(&Point{coords: []float64{*latitudeArg, *longitudeArg}}, *distArg, *limitArg)
+		parms := &ReqParams{Latitude: *latitudeArg, Longitude: *longitudeArg, Distance: *distArg, CountLimit: *limitArg}
+		list := findClosest(parms)
 
 		json.NewEncoder(os.Stdout).Encode(list)
 	}

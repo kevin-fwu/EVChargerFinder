@@ -5,57 +5,35 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"strconv"
 )
+
+type ReqParams struct {
+	Latitude   float64
+	Longitude  float64
+	Distance   float64
+	CountLimit int
+}
 
 func httpLookup(w http.ResponseWriter, r *http.Request) {
 
-	err := r.ParseForm()
+	if r.Header.Get("Content-Type") != "application/json" {
+		msg := "Content-Type header is not application/json"
+		http.Error(w, msg, http.StatusBadRequest)
+		return
+	}
+
+	decoder := json.NewDecoder(r.Body)
+
+	var parms ReqParams
+	err := decoder.Decode(&parms)
 
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		fmt.Fprintf(w, "Unable to parse input body. Error: %+v", err)
+		fmt.Fprintf(w, "Unable to decode input JSON. Error: %+v", err)
 		return
 	}
 
-	arg, ok := r.PostForm["coordinates"]
-	if !ok || len(arg) != 1 {
-		fmt.Fprintf(w, "Invalid input coordinate count")
-		return
-	}
-
-	var latitude, longitude float64
-
-	_, err = fmt.Sscanf(arg[0], "%f,%f", &latitude, &longitude)
-
-	if err != nil {
-		fmt.Fprintf(w, "Invalid input coordinates")
-		return
-	}
-
-	arg, ok = r.PostForm["distance"]
-	if !ok || len(arg) != 1 {
-		fmt.Fprintf(w, "Invalid input distance count")
-	}
-
-	dist, err := strconv.ParseFloat(arg[0], 64)
-	if err != nil {
-		fmt.Fprintf(w, "Invalid input distance")
-		return
-	}
-
-	arg, ok = r.PostForm["limit"]
-	if !ok || len(arg) != 1 {
-		fmt.Fprintf(w, "Invalid input distance count")
-	}
-
-	limit, err := strconv.ParseInt(arg[0], 10, 32)
-	if err != nil {
-		fmt.Fprintf(w, "Invalid input distance")
-		return
-	}
-
-	list := findClosest(&Point{[]float64{latitude, longitude}}, dist, int(limit))
+	list := findClosest(&parms)
 
 	w.Header().Set("Content-Type", "application/json")
 

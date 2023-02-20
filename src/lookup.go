@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"math"
 	"sort"
 
@@ -50,7 +49,11 @@ func calcDist(lat1, lon1, lat2, lon2 float64) float64 {
 // findClosest finds the closest EV Stations to the given point.
 //
 // For now, distance must be between 0 and 500 miles
-func findClosest(point *Point, dist float64, limit int) []*LocDist {
+func findClosest(parms *ReqParams) []*LocDist {
+
+	point := &Point{[]float64{parms.Latitude, parms.Longitude}}
+	dist := parms.Distance
+	limit := parms.CountLimit
 
 	if dist < 0 {
 		dist = 25
@@ -75,7 +78,6 @@ func findClosest(point *Point, dist float64, limit int) []*LocDist {
 	for _, node := range estimateNodes {
 		coords := node.GetCoordinates()
 		if nodeDist := calcDist(point.coords[0], point.coords[1], coords[0], coords[1]); nodeDist <= dist {
-			fmt.Printf("node dist: [%f, %f] to [%f, %f]: %f\n", point.coords[0], point.coords[1], coords[0], coords[1], nodeDist)
 			locationsInRange = append(locationsInRange, &LocDist{Dist: nodeDist, Loc: node.(*Location)})
 		}
 	}
