@@ -1,0 +1,19 @@
+version: v1.0
+name: Docker
+agent:
+  machine:
+    type: e1-standard-2
+    os_image: ubuntu2004
+blocks:
+  - name: Build
+    task:
+      jobs:
+        - name: Build
+          commands:
+            - checkout
+            - echo "$DOCKER_PASSWORD" | docker login  --username "$DOCKER_USERNAME" --password-stdin
+            - 'docker pull $DOCKER_USERNAME/evchargerfinder-production:latest'
+            - 'docker build -f Dockerfile --cache-from $DOCKER_USERNAME/evchargerfinder-production:latest -t $DOCKER_USERNAME/evchargerfinder-production:latest .'
+            - 'docker push $DOCKER_USERNAME/evchargerfinder-production:latest'
+      secrets:
+        - name: dockerhub
