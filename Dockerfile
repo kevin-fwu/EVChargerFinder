@@ -17,4 +17,4 @@ WORKDIR "$APP_HOME"
 COPY --from=builder "$APP_HOME"/evchargerfinder $APP_HOME
 
 EXPOSE 8080
-CMD ["./evchargerfinder"]
+CMD ["./evchargerfinder" "-conf=evchargerfinder.json"]
