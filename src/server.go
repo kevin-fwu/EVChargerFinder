@@ -16,6 +16,11 @@ type ReqParams struct {
 
 func httpLookup(w http.ResponseWriter, r *http.Request) {
 
+	if r.Method != http.MethodPost {
+		fmt.Fprint(w, "Hello, this is EVChargerFinder!")
+		return
+	}
+
 	if r.Header.Get("Content-Type") != "application/json" {
 		msg := "Content-Type header is not application/json"
 		http.Error(w, msg, http.StatusBadRequest)
