@@ -79,7 +79,7 @@ func httpGetAll(w http.ResponseWriter, r *http.Request) {
 func listen(address, sslcert, sslkey string) {
 
 	http.HandleFunc("/getnearest", httpLookup)
-	http.HandleFunc("/getnearest", httpGetAll)
+	http.HandleFunc("/getall", httpGetAll)
 
 	if sslkey != "" {
 		log.Fatal(http.ListenAndServeTLS(address, sslcert, sslkey, nil))
