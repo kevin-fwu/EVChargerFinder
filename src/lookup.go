@@ -91,3 +91,21 @@ func findClosest(parms *ReqParams) []*LocDist {
 	}
 	return locationsInRange
 }
+
+// getAll returns all known EV Stations.
+func getAll(parms *ReqParams) []*Location {
+
+	// if parms != nil {
+
+	// }
+
+	allNodes := sortedTree.GetAll()
+
+	var locations []*Location
+
+	for _, node := range allNodes {
+		// Perform any filtering here.
+		locations = append(locations, node.(*Location))
+	}
+	return locations
+}

@@ -60,6 +60,24 @@ func (node *KdNode) Search(point Coordinates, dist float64, numDimensions, depth
 	return list
 }
 
+// GetAll returns all nodes in the system.
+func (node *KdNode) GetAll() []Coordinates {
+	var list []Coordinates
+	list = append(list, node.value)
+
+	if node.ltChild != nil {
+		ltList := node.ltChild.GetAll()
+		list = append(list, ltList...)
+	}
+
+	if node.gtChild != nil {
+		gtList := node.gtChild.GetAll()
+		list = append(list, gtList...)
+	}
+
+	return list
+}
+
 // buildKdTree compiles a K-D Tree for fast multi-dimensional distance calculation.
 //
 // It requires as input:

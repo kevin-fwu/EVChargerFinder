@@ -45,9 +45,41 @@ func httpLookup(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(list)
 }
 
+func httpGetAll(w http.ResponseWriter, r *http.Request) {
+
+	var pParms *ReqParams = nil
+
+	if r.Method == http.MethodPost {
+		if r.Header.Get("Content-Type") != "application/json" {
+			msg := "Content-Type header is not application/json"
+			http.Error(w, msg, http.StatusBadRequest)
+			return
+		}
+
+		decoder := json.NewDecoder(r.Body)
+
+		var parms ReqParams
+		err := decoder.Decode(&parms)
+
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			fmt.Fprintf(w, "Unable to decode input JSON. Error: %+v", err)
+			return
+		}
+		pParms = &parms
+	}
+
+	list := getAll(pParms)
+
+	w.Header().Set("Content-Type", "application/json")
+
+	json.NewEncoder(w).Encode(list)
+}
+
 func listen(address, sslcert, sslkey string) {
 
 	http.HandleFunc("/getnearest", httpLookup)
+	http.HandleFunc("/getnearest", httpGetAll)
 
 	if sslkey != "" {
 		log.Fatal(http.ListenAndServeTLS(address, sslcert, sslkey, nil))
